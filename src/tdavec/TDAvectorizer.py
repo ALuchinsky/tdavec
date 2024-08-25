@@ -1,7 +1,7 @@
 import numpy as np
 import ripser
 
-from TDAvec import pmin, pmax, DiagToPD, \
+from tdavec.TDAvec import pmin, pmax, DiagToPD, \
     computeVPB, computePL, computePS, computeNL, computeVAB, computeECC, computePES, computePI,\
     computeVPB_dim0, computeVPB_dim1, computeFDA
 

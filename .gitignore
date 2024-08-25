@@ -1,0 +1,8 @@
+.DS_Store
+env/
+.DS_Store
+src/tdavec/.DS_Store
+src/tdavec/TDAvec.html
+src/tdavec/__pycache__/
+src/API_token
+
