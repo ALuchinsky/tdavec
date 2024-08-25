@@ -22,7 +22,7 @@ Run
 to install the package. You can see that it is installed by running by trying ipython:
 
     > ipython
-    []  tdavec.TDAvectorizer import *
+    []  from tdavec.TDAvectorizer import *
     []  X = createEllipse(100)
     []  vec = TDAvectorizer()
     []  vec.fit(X)
