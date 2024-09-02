@@ -106,7 +106,7 @@ def computeVPB_dim1(np.ndarray[np.float64_t, ndim=1] x,
     cdef np.ndarray[np.float64_t, ndim=2] vpb = np.zeros((n, m), dtype=np.float64)
     cdef int i, j, k, num_inds
     cdef double a, b, c, d, add
-    cdef np.ndarray[np.int_t, ndim=1] inds
+    cdef np.ndarray[np.int64_t, ndim=1] inds
     cdef np.ndarray[np.float64_t, ndim=1] xInd, yInd, lamInd, xMin, xMax, yMin, yMax
 
     for i in range(n):
