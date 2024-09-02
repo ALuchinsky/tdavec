@@ -1,8 +1,11 @@
 .DS_Store
 env/
 .DS_Store
-src/tdavec/.DS_Store
-src/tdavec/TDAvec.html
-src/tdavec/__pycache__/
-src/API_token
 
+.vscode/
+build/
+*.egg-info/
+*.o
+__pycache__/
+*.c
+*.so
