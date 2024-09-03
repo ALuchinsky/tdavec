@@ -1,4 +1,4 @@
 [build-system]
-requires = ["setuptools", "wheel", "Cython", "numpy"]  # Specify the tools needed to build your package
+requires = ["setuptools", "wheel", "Cython", "numpy", "ripser"]  # Specify the tools needed to build your package
 build-backend = "setuptools.build_meta"
 

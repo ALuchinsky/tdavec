@@ -14,6 +14,6 @@ setup(
     version = "0.0.1",
     packages = ["tdavec"],
     ext_modules = cythonize(extensions),
-    setup_requires=["Cython", "numpy"],
+    setup_requires=["Cython", "numpy", "ripser"],
     zip_safe = False
 )

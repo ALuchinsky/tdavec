@@ -18,6 +18,11 @@ after that you should have `tdavec` package installed in your environment. To ch
     >  len(v.diags[0]) # ==> 1 since there is two dimensions
     >  len(v.diags[0][0]) # ==> 99 since there are 99 hom0 features
 
+# GitHub install
+
+
+    > pip install git+https://github.com/ALuchinsky/avl_cython_example.git
+    
 # Ways to compile and publish:
 
 Run the following commands from project root directory:
