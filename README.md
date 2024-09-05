@@ -8,7 +8,7 @@ From project root directory run
     > python3 setup.py build_ext --inplace
     > pip install .
 
-after that you should have `tdavec` package installed in your environment. To check this run
+after that you should have `tdavec` package installed in your environment. To check this run python and try the following commands:
 
     > from tdavec.TDAvectorizer import createEllipse, TDAvectorizer
     >  ee  = createEllipse()
@@ -20,9 +20,11 @@ after that you should have `tdavec` package installed in your environment. To ch
 
 # GitHub install
 
+On clean python environment run
 
+    > pip install numpy==1.26.4 ripser==0.6.8
     > pip install git+https://github.com/ALuchinsky/avl_cython_example.git
-    
+
 # Ways to compile and publish:
 
 Run the following commands from project root directory:
