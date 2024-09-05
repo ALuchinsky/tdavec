@@ -11,7 +11,8 @@ extensions = [
 
 setup(
     name = "tdavec",
-    version = "0.0.1",
+    version = "0.1.0",
+    author = "Umar Islambekov, Aleksei Luchinsky",
     packages = ["tdavec"],
     ext_modules = cythonize(extensions),
     setup_requires=["Cython", "numpy", "ripser"],
