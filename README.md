@@ -4,7 +4,6 @@ In this repository we describe the python interface to R package `TDAvec`, which
 
 ## Installation instructions
 
-### Local install:
 
 First, you need to create a clean python environment. Fro the project root directory run:
 
@@ -30,3 +29,7 @@ after that you should have `tdavec` package installed in your environment. To ch
 or run the provided unit test:
 
     > python tdavec/unit_test.py
+
+Alternatively you can install the package directly from GitHub:
+
+    > pip install git+https://github.com/ALuchinsky/tdavect
