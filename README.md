@@ -1,7 +1,10 @@
-Files for python version of the `TDAvec` package
+# Python Interface to TDAvec package
 
+In this repository we describe the python interface to R package `TDAvec`, which can be installed from CRAN
 
-# Local install:
+## Installation instructions
+
+### Local install:
 
 First, you need to create a clean python environment. Fro the project root directory run:
 
@@ -24,3 +27,6 @@ after that you should have `tdavec` package installed in your environment. To ch
     >  len(v.diags[0]) # ==> 1 since there is two dimensions
     >  len(v.diags[0][0]) # ==> 99 since there are 99 hom0 features
 
+or run the provided unit test:
+
+    > python tdavec/unit_test.py
