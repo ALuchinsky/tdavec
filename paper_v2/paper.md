@@ -63,6 +63,29 @@ The rest of the paper is organized as follows. In the next section we describe i
     \end{tabular}
 \end{table}
 
+# Usage Examples
+
+Let us first diescribe how R library `TDAvec` can be installed and used.
+
+Current version of this library is available on CRAN, so simplet version to install it is to use standard R way:
+
+    > install.packages("TDAvec")
+
+After downloading the library you can use functions such functions as `computePL`, `computePS`, etc to calculate the corresponding vectorization summaries of the presistance diagrams.
+
+Suppose that we have some random set of squeze factors $e^a \in [0;1]$ and for each o them we create a cloud of points located around the ellipse
+$$
+(x_i, y_i)^a = ( r_i \cos\phi_i, e^a r_i\sin\phi_i
+$$
+In the figure figure \autoref{fig:clouds} below you can see examples of the created point clouds.
+
+![Examples of the point clouds\label{fig:clouds}](figs/Rclouds.png)
+
+Created point clouds can be converted into persistence diagrams using such functions as `ripsDiag` from `TDA` package. Each of the for each of the diagrams we can calculatr Persistence Landscape suppary with the help of `computePL(diagram, homDim, x)` function. In figure \autoref{fig:PLs} you can see the result.
+
+![Persistence landscape summaries created from presented above point clouds\label{fig:PLs}](figs/RPL.png)
+
+
 # Statement of need
 
 As it was mentioned in the previous section, vectorization step is extremely important to include TDA in the ML pipeline. Up to now lots of different vectorization methods were proposed (see the Appendix below for short description of some of the existing ones). It turns out that performance accuracy of the ML algorithms depends strongly on the choice of the used vectorization, so it could be very interesting to be able to compare different approaches.
