@@ -5,7 +5,7 @@ In this repository we describe the python interface to R package `TDAvec`, which
 ## Installation instructions
 
 
-First, you need to create a clean python environment. Fro the project root directory run:
+First, you need to create a clean python environment. From the project root directory run:
 
     > python3 -m venv venv
     > source venv/bin/activate
