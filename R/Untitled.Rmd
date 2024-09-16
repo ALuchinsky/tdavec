@@ -46,9 +46,51 @@ save_figure <- function(name) {
 set.seed(123)
 epsList <- round(as.vector(read.csv("./epsList.csv", header = FALSE))[[1]], 3)
 clouds <- lapply(epsList, function(e) createEllipse(100, a=1, b=e))
-PDs <- list.rbind( lapply(1:4, function(i) 
+PDs <- lapply(1:length(clouds), function(i) 
+  ripsDiag(clouds[[i]], maxdimension = 1, maxscale = 2)$diagram
+)
+```
+
+```{r}
+suppressPackageStartupMessages(library(dplyr))
+```
+
+
+```{r}
+dfClouds  <- list.rbind( lapply(1:4, function(i) 
   data.frame(x = clouds[[i]][,1], y=clouds[[i]][,2], e=epsList[i])))
-PDs %>% ggplot(aes(x=x, y=y)) + geom_point() + facet_wrap(~e) + theme(aspect.ratio = 1)
+dfClouds %>% ggplot(aes(x=x, y=y)) + geom_point() + facet_wrap(~e) + theme(aspect.ratio = 1)
 save_figure("Rclouds")
+```
+
+```{r}
+dfPDs  <- list.rbind( lapply(1:4, function(i) 
+  data.frame(dim = PDs[[i]][,1], birth=PDs[[i]][,2], death = PDs[[i]][,3], e=epsList[i]))) %>% 
+  mutate(dim = factor(dim), e=factor(e))
+dfPDs %>% ggplot(aes(x=birth, y=death, color = dim)) + geom_point() + facet_wrap(~e) +
+  geom_abline(lty=2) + theme(legend.position = "none", aspect.ratio = 1) + xlim(0, 2) + ylim(0, 2)
+```
+
+
+```{r}
+library(TDA)
+```
+
+```{r}
+PDs <- lapply(1:length(clouds), function(i) 
+  ripsDiag(clouds[[i]], maxdimension = 1, maxscale = 2)$diagram
+)
+```
+
+```{r}
+scaleSeq <- seq(0, 2, length.out = 10)
+df <- data.frame()
+for(i in 1:length(PDs)) {
+  PL <- computePL(PDs[[i]], 1, scaleSeq)
+  df <- rbind(df, data.frame(x=scaleSeq, y=PL, e=epsList[i]))
+}
+df$e <- factor(df$e)
+df %>% ggplot(aes(x=x, y=y, color = e)) + geom_line()
+save_figure("RPL")
 ```
 

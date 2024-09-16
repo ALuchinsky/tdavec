@@ -63,27 +63,6 @@ The rest of the paper is organized as follows. In the next section we describe i
     \end{tabular}
 \end{table}
 
-# Usage Examples
-
-Let us first diescribe how R library `TDAvec` can be installed and used.
-
-Current version of this library is available on CRAN, so simplet version to install it is to use standard R way:
-
-    > install.packages("TDAvec")
-
-After downloading the library you can use functions such functions as `computePL`, `computePS`, etc to calculate the corresponding vectorization summaries of the presistance diagrams.
-
-Suppose that we have some random set of squeze factors $e^a \in [0;1]$ and for each o them we create a cloud of points located around the ellipse
-$$
-(x_i, y_i)^a = ( r_i \cos\phi_i, e^a r_i\sin\phi_i
-$$
-In the figure figure \autoref{fig:clouds} below you can see examples of the created point clouds.
-
-![Examples of the point clouds\label{fig:clouds}](figs/Rclouds.png)
-
-Created point clouds can be converted into persistence diagrams using such functions as `ripsDiag` from `TDA` package. Each of the for each of the diagrams we can calculatr Persistence Landscape suppary with the help of `computePL(diagram, homDim, x)` function. In figure \autoref{fig:PLs} you can see the result.
-
-![Persistence landscape summaries created from presented above point clouds\label{fig:PLs}](figs/RPL.png)
 
 
 # Statement of need
@@ -109,6 +88,36 @@ where $\Delta t_i=t_{i+1}-t_i$. Unlike (\ref{stand_vec}), this vectorization met
 3. To achieve higher computational efficiency, all code behind the vector summaries of \texttt{TDAvec} is written in C++. For example, in \texttt{R}, computing the persistence landscape from a PD with the \texttt{TDAvec} package is more than 200 times faster than with the \texttt{TDA} package.
 
 The \texttt{TDAvec} \texttt{R} package and a vignette showing its basic usage with examples are available on the CRAN repository\footnote{https://cran.r-project.org/web/packages/TDAvec/index.html}. For \texttt{Python} examples, we refer the readers to sample notebook presented in [@pyTDAvec:2024]. 
+
+# Usage Examples
+
+Let us first diescribe how R library `TDAvec` can be installed and used.
+
+Current version of this library is available on CRAN, so simplet version to install it is to use standard R way:
+
+    > install.packages("TDAvec")
+
+After downloading the library you can use functions such functions as `computePL`, `computePS`, etc to calculate the corresponding vectorization summaries of the presistance diagrams.
+
+Suppose that we have some random set of squeze factors $e^a \in [0;1]$ and for each o them we create a cloud of points located around the ellipse
+$$
+(x_i, y_i)^a = ( r_i \cos\phi_i, e^a r_i\sin\phi_i)
+$$
+Here are R commands to reate the point clouds:
+
+    > epsList <- round(as.vector(read.csv("./epsList.csv", header = FALSE))[[1]], 3)
+    > clouds <- lapply(epsList, function(e) createEllipse(100, a=1, b=e))
+    > PDs <- lapply(1:length(clouds), function(i) 
+           ripsDiag(clouds[[i]], maxdimension = 1, maxscale = 2)$diagram
+        )
+In the figure figure \autoref{fig:XandPDs} below you can see examples of the created data.
+
+![Examples of the point clouds\label{fig:XandPDs}](figs/XandPDs.png)
+
+Created point clouds can be converted into persistence diagrams using such functions as `ripsDiag` from `TDA` package. Each of the for each of the diagrams we can calculatr Persistence Landscape suppary with the help of `computePL(diagram, homDim, x)` function. In figure \autoref{fig:PLs} you can see the result.
+
+![Persistence landscape summaries created from presented above point clouds\label{fig:PLs}](figs/RPL.png)
+
 
 # Appendix: Definitions of the summary functions in \texttt{TDAvec}
 
