@@ -118,6 +118,18 @@ Created point clouds can be converted into persistence diagrams using such funct
 
 ![Persistence landscape summaries created from presented above point clouds\label{fig:PLs}](figs/RPL.png)
 
+The python interface of `TDAvec` library can be installed from the GitHub repository
+
+> pip install git+https://github.com/ALuchinsky/tdavect
+
+Note that it was tested on Python 3.11 and uses numpy (vesrion numpy==1.2) and ripser (version 0.6.8) libraries.
+
+In this realization agrees with scikit learn interface, so we are using class-orientied approach. After instatting the library you can load all the objects with
+
+> from tdavec.TDAvectorizer import TDAvectorizer, createEllipse
+
+
+
 
 # Appendix: Definitions of the summary functions in \texttt{TDAvec}
 
