@@ -59,16 +59,25 @@ suppressPackageStartupMessages(library(dplyr))
 ```{r}
 dfClouds  <- list.rbind( lapply(1:4, function(i) 
   data.frame(x = clouds[[i]][,1], y=clouds[[i]][,2], e=epsList[i])))
-dfClouds %>% ggplot(aes(x=x, y=y)) + geom_point() + facet_wrap(~e) + theme(aspect.ratio = 1)
-save_figure("Rclouds")
+figClouds <- dfClouds %>% ggplot(aes(x=x, y=y)) + geom_point() + facet_wrap(~e) + theme(aspect.ratio = 1) +
+  ggtitle("Point Clouds")
+figClouds
+#save_figure("Rclouds")
 ```
 
 ```{r}
 dfPDs  <- list.rbind( lapply(1:4, function(i) 
   data.frame(dim = PDs[[i]][,1], birth=PDs[[i]][,2], death = PDs[[i]][,3], e=epsList[i]))) %>% 
   mutate(dim = factor(dim), e=factor(e))
-dfPDs %>% ggplot(aes(x=birth, y=death, color = dim)) + geom_point() + facet_wrap(~e) +
-  geom_abline(lty=2) + theme(legend.position = "none", aspect.ratio = 1) + xlim(0, 2) + ylim(0, 2)
+figPDs <- dfPDs %>% ggplot(aes(x=birth, y=death, color = dim)) + geom_point() + facet_wrap(~e) +
+  geom_abline(lty=2) + theme(legend.position = "none", aspect.ratio = 1) + xlim(0, 2) + ylim(0, 2) +
+  ggtitle("Presistence Diagrams")
+figPDs
+```
+
+```{r}
+ggpubr::ggarrange(figClouds, figPDs)
+save_figure("XandPDs")
 ```
 
 
