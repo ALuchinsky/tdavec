@@ -69,11 +69,11 @@ The rest of the paper is organized as follows. In the next section we describe i
 
 As it was mentioned in the previous section, vectorization step is extremely important to include TDA in the ML pipeline. Up to now lots of different vectorization methods were proposed (see the Appendix below for short description of some of the existing ones). It turns out that performance accuracy of the ML algorithms depends strongly on the choice of the used vectorization, so it could be very interesting to be able to compare different approaches.
 
-In order to do such a comparison it would be useful to have all considered vectorization methods implemented in one package in the uniform manner. Unfortunately, up to now such a package does not exist. all mentioned in the Introduction libraries do have implementation of some of the vectorizations (see table for quick comparison), but there is no ackage combining all of them together. More over, in R all the code behind the existing vector implementation is written using standard R factions, which may prove slow and inefficient in large-scale computations. In addition, the interfaces of various factions in different packages are not compatible with each other, which makes the comparison even more chalenging.
+In order to do such a comparison it would be useful to have all considered vectorization methods implemented in one package in the uniform manner. Unfortunately, up to now such a package does not exist. all mentioned in the Introduction libraries do have implementation of some of the vectorization (see table for quick comparison), but there is no ackage combining all of them together. More over, in R all the code behind the existing vector implementation is written using standard R factions, which may prove slow and inefficient in large-scale computations. In addition, the interfaces of various factions in different packages are not compatible with each other, which makes the comparison even more chalenging.
 
 The TDArea R package and its Python counterpart aim to fill these gaps. Its contributions can be summarized as following:
 
-1. It expands the list of implemented vector summaries of PDs by providing vectorizations of eight functional summaries found in the TDA literature: \emph{Betti function}, \emph{persistence landscape function}, \emph{persistence silhouette function}, \emph{persistent entropy summary function} [@atienza2020stability], \emph{Euler characteristic curve} [@richardson2014efficient], \emph{normalized life curve} [@chung2022persistence], \emph{persistence surface} [@adams2017persistence] and \emph{persistence block} [@chan2022computationally] (see the Appendix for their definitions).
+1. It expands the list of implemented vector summaries of PDs by providing vectorization of eight functional summaries found in the TDA literature: \emph{Betti function}, \emph{persistence landscape function}, \emph{persistence silhouette function}, \emph{persistent entropy summary function} [@atienza2020stability], \emph{Euler characteristic curve} [@richardson2014efficient], \emph{normalized life curve} [@chung2022persistence], \emph{persistence surface} [@adams2017persistence] and \emph{persistence block} [@chan2022computationally] (see the Appendix for their definitions).
 
 2. A univariate summary function $f$ of a PD is typically vectorized by evaluating it at each point of a superimposed one dimensional grid and arranging the resulting values into a vector:
 \begin{equation}\label{stand_vec}
@@ -91,16 +91,15 @@ The \texttt{TDAvec} \texttt{R} package and a vignette showing its basic usage wi
 
 # Usage Examples
 
-Let us first diescribe how R library `TDAvec` can be installed and used.
+Let us first describe how the R library TDAvec can be installed and used.
 
-Current version of this library is available on CRAN, so simplet version to install it is to use standard R way:
+The current version of this library is available on CRAN, so the simplest way to install it is by using the standard R method:
 
     > install.packages("TDAvec")
 
-After downloading the library you can use functions such functions as `computePL`, `computePS`, etc to calculate the corresponding vectorization summaries of the presistance diagrams.
+After downloading the library, you can use functions such as computePL, computePS, etc., to calculate the corresponding vectorization summaries of persistence diagrams.
 
-Suppose that we have some random set of squeze factors $e^a \in [0;1]$ and for each o them we create a cloud of points located around the ellipse
-$$
+Suppose we have a random set of squeeze factors $e^a \in [0,1]$, and for each of them, we create a cloud of points located around an ellipse:$$
 (x_i, y_i)^a = ( r_i \cos\phi_i, e^a r_i\sin\phi_i)
 $$
 Here are R commands to reate the point clouds:
@@ -114,20 +113,78 @@ In the figure figure \autoref{fig:XandPDs} below you can see examples of the cre
 
 ![Examples of the point clouds\label{fig:XandPDs}](figs/XandPDs.png)
 
-Created point clouds can be converted into persistence diagrams using such functions as `ripsDiag` from `TDA` package. Each of the for each of the diagrams we can calculatr Persistence Landscape suppary with the help of `computePL(diagram, homDim, x)` function. In figure \autoref{fig:PLs} you can see the result.
+Created point clouds can be converted into persistence diagrams using such functions as `ripsDiag` from `TDA` package. Each of the for each of the diagrams we can calculate Persistence Landscape summary with the help of `computePL(diagram, homDim, x)` function. In figure \autoref{fig:PLs} you can see the result.
 
 ![Persistence landscape summaries created from presented above point clouds\label{fig:PLs}](figs/RPL.png)
 
 The python interface of `TDAvec` library can be installed from the GitHub repository
 
-> pip install git+https://github.com/ALuchinsky/tdavect
+    > pip install git+https://github.com/ALuchinsky/tdavect
 
 Note that it was tested on Python 3.11 and uses numpy (vesrion numpy==1.2) and ripser (version 0.6.8) libraries.
 
-In this realization agrees with scikit learn interface, so we are using class-orientied approach. After instatting the library you can load all the objects with
+This implementation follows the scikit-learn interface, so it uses a class-oriented approach. After installing the library, you can load all the objects with:
 
-> from tdavec.TDAvectorizer import TDAvectorizer, createEllipse
+    > from tdavec.TDAvectorizer import TDAvectorizer, createEllipse
 
+You can now use an object of the class TDAvectorizer to create persistence diagrams and vectorize them. Here is an example of Python code that performs the same job as the R commands above:
+
+    > epsList = np.random.uniform(low = 0, high = 1, size = 500)
+    > clouds = [createEllipse(a=1, b=eps, n=100) for eps in epsList]
+    > v = TDAvectorizer()
+    > v.fit(clouds)
+
+The last line effectively uses the ripser library to convert data point clouds into a list of persistence diagrams, and the results will be saved in the v.diags property of the vectorizer object. To perform vectorization, we can simply call the fit() method of the same object:
+
+
+    > v.setParams({"scale":np.linspace(0, 2, 10)})
+    > X = v.transform(output="PL", homDim=1)
+
+Note that the scale sequence (i.e., grid points for persistence landscape calculation) is specified in the first line. The type of vectorization summary can be specified as a parameter. This approach makes it extremely convenient to easily switch between methods in the analysis and assess accuracy. Here's how we can conduct such an analysis.
+
+First, we define a helper function that vectorizes persistence diagrams using the specified method, builds a linear regression model based on the obtained predictors, and reports accuracies on the training and testing subsets:
+
+
+    > def makeSim(method, homDim, vec = v, y=epsList):
+    >    X =v.transform(output=method, homDim=homDim)
+    >    Xtrain, Xtest, ytrain, ytest = train_test_split(X, y, train_size=0.8, random_state=42)
+    >    model = LinearRegression().fit(Xtrain, ytrain)
+    >    test_preds = model.predict(Xtest)
+    >    score = model.score(Xtest, ytest)
+    >    res = {"method":method, "homDim":homDim, "test_preds":test_preds, "y_test":ytest, "score":score}
+    >    return res
+
+Now we can use this function to collect data, construct accuracy tables, and compare true values and model predictions for each vectorization method:
+
+
+    > methodList = ["vab", "ps", "nl", "ecc", "fda"]
+    > df = pd.DataFrame()
+    > for homDim in [0, 1]:
+    >    for method in methodList:
+    >    df = pd.concat([df, pd.DataFrame( makeSim(method, homDim))])
+
+Using the created data frame, we can easily compare performance accuracies (see table below). It's also simple to check the accuracy of the models by inspecting true vs. predicted scatter plots (see figure).
+
+
+![True-Predictions scatter plots for different vectorization methods\label{fig:scatters}](figs/LR_comarison.png)
+
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{lrr}
+   \hline
+   Method & dim 0 & dim 1 \\
+   \hline
+   ecc & 0.976 & 0.996 \\
+   fda & 0.983 & 0.985 \\
+   NL & 0.8930 & 0.980 \\
+   PS & 0.903 & 0.914 \\
+   VAB & 0.976 & 0.985 \\
+   \hline
+  \end{tabular}
+\end{table}
+
+# Conclusion
 
 
 
