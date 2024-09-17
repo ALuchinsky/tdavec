@@ -256,8 +256,8 @@ Using the created data frame, we can easily compare performance accuracies (see 
    \hline
    Method & dim 0 & dim 1 \\
    \hline
-   ecc & 0.976 & 0.996 \\
-   fda & 0.983 & 0.985 \\
+   ECC & 0.976 & 0.996 \\
+   FDA & 0.983 & 0.985 \\
    NL & 0.8930 & 0.980 \\
    PS & 0.903 & 0.914 \\
    VAB & 0.976 & 0.985 \\
