@@ -78,8 +78,8 @@ The computational tools for TDA in the \texttt{R} environment are provided throu
     Statistical methods &\cm &\cm &\cm &\cm & & & & &
        & & & \\
     \hline
-    Vectorization methods &\cm & & &\cm & \cm & & & &
-       & & & \\
+    Vectorization methods &\cm & & &\cm & \cm &  & & &
+       \cm & \cm & & \cm \\
     \hline
     Kernel methods & &\cm & &\cm & \cm & & & &
        & & & \\
