@@ -1,7 +1,7 @@
 import numpy as np
 import ripser
 
-from tdavec.TDAvec import pmin, pmax, DiagToPD, \
+from TDAvec import pmin, pmax, DiagToPD, \
     computeVPB, computePL, computePS, computeNL, computeVAB, computeECC, computePES, computePI,\
     computeVPB_dim0, computeVPB_dim1, computeFDA
 
@@ -56,7 +56,9 @@ class TDAvectorizer:
         for k in params.keys():
             self.params[k] = params[k]
         return
-    
+
+    def plot(self):
+        print("Plotting")
     
     def __getitem__(self, index):
         self.diags = self.diags[index]
