@@ -4,7 +4,7 @@ output: html_notebook
 ---
 
 ```{r}
-install.packages("TDAvec")
+#install.packages("TDAvec")
 ```
 
 ```{r}
@@ -27,19 +27,24 @@ library(magrittr)
 ```
 
 ```{r}
-install.packages("rlist")
+#install.packages("rlist")
 ```
 
 ```{r}
 library(rlist)
+library(TDA)
 ```
 
 ```{r}
-save_figure <- function(name) {
-  ggsave(paste0("../paper_v2/figs/",name,".png"))
+save_figure <- function(name, width = NULL, height = NULL) {
+  if( is.null(width)) {
+    ggsave(paste0("../paper/figs/",name,".png"))
+  }
+  else {
+    ggsave(paste0("../paper/figs/",name,".png"), width = width, height = height)
+  }
 }
 ```
-
 
 
 ```{r}
@@ -94,12 +99,12 @@ PDs <- lapply(1:length(clouds), function(i)
 ```{r}
 scaleSeq <- seq(0, 2, length.out = 10)
 df <- data.frame()
-for(i in 1:length(PDs)) {
+for(i in 1:4) {
   PL <- computePL(PDs[[i]], 1, scaleSeq)
   df <- rbind(df, data.frame(x=scaleSeq, y=PL, e=epsList[i]))
 }
 df$e <- factor(df$e)
 df %>% ggplot(aes(x=x, y=y, color = e)) + geom_line()
-save_figure("RPL")
+save_figure("RPL", width = 3)
 ```
 
