@@ -82,7 +82,7 @@ figPDs
 
 ```{r}
 ggpubr::ggarrange(figClouds, figPDs)
-save_figure("XandPDs")
+save_figure("XandPDs", width = 4, height = 3)
 ```
 
 
@@ -105,6 +105,6 @@ for(i in 1:4) {
 }
 df$e <- factor(df$e)
 df %>% ggplot(aes(x=x, y=y, color = e)) + geom_line()
-save_figure("RPL", width = 3)
+save_figure("RPL", width = 4, height = 3)
 ```
 
