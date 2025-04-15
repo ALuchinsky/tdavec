@@ -1,9 +1,8 @@
 import unittest
 
-import TDAvectorizer
-from TDAvectorizer import computeNL, computeVAB, computeVPB, computePL, computePS, \
-    computeECC, computePES, computePI, computeFDA,\
-        DiagToPD, createEllipse, vect
+from tdavec import TDAvectorizer, tdavec_core, createEllipse
+from tdavec.tdavec_core import computeNL, computeVAB, computeVPB, computePersistenceLandscape, computePS, \
+    computeECC, computePES, computePI, computeFDA
 import ripser
 import numpy as np
 
@@ -20,12 +19,12 @@ class Testing_Functions(unittest.TestCase):
 
 
     def test_PL_0(self):
-        python = computePL(self.D, 0, self.scaleSeq)
+        python = computePersistenceLandscape(self.D, 0, self.scaleSeq)
         R = [ 0, 0.2, 0.4, 0.6, 0.8, 1, 0.8, 0.6, 0.4, 0.2, 0]
         self.assertTrue( lists_are_equal(python, R))
     
     def test_PL_1(self):
-        python = computePL(self.D, 1, self.scaleSeq)
+        python = computePersistenceLandscape(self.D, 1, self.scaleSeq)
         R = [ 0, 0.0142176303784579, 0.000931983027759931, 0.191114535909928, 
              0.391114535909928, 0.269212150161859, 0.0692121501618592, 0, 0, 0, 0]
         self.assertTrue( lists_are_equal(python, R))
@@ -162,7 +161,7 @@ class Testing_Class(unittest.TestCase):
         self.ratList = np.random.uniform(-0.5, 0.5, 10)
         for ratio in self.ratList:
             self.clouds = self.clouds + [createEllipse(a=1-ratio, b=1, eps=0.1)]
-        self.vect = TDAvectorizer.TDAvectorizer()
+        self.vect = TDAvectorizer()
         self.vect.fit(self.clouds)
 
     def test_N(self):

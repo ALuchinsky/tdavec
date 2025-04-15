@@ -153,7 +153,7 @@ def computeVPB(D, homDim, xSeq, ySeq, tau=0.3):
     else:
         return computeVPB_dim1(x, y, xSeq, ySeq, lam)
 
-def computePL(D, homDim, scaleSeq, k=1):
+def computePersistenceLandscape(D, homDim, scaleSeq, k=1):
     """
     Compute the persistence landscape (PL) for a given homological dimension, scale sequence, and order of landscape.
 

@@ -2,7 +2,7 @@ import numpy as np
 import ripser
 
 from  .tdavec_core import pmin, pmax, DiagToPD, \
-    computeVPB, computePL, computePS, computeNL, computeVAB, computeECC, computePES, computePI,\
+    computeVPB, computePersistenceLandscape, computePS, computeNL, computeVAB, computeECC, computePES, computePI,\
     computeVPB_dim0, computeVPB_dim1, computeFDA
 
 def pmax(num, vec):
@@ -112,7 +112,7 @@ class TDAvectorizer:
                     out = out.reshape( (out.shape[0], out.shape[1]*out.shape[2]))
                 return out
             elif output == "pl":
-                return np.array([computePL(d, homDim = homDim, scaleSeq = xSeq, k = k) for d in self.diags])
+                return np.array([computePersistenceLandscape(d, homDim = homDim, scaleSeq = xSeq, k = k) for d in self.diags])
             elif output == "ps":
                 return np.array([computePS(d, homDim = homDim, scaleSeq = xSeq, p=k) for d in self.diags])
             elif output == "nl":
