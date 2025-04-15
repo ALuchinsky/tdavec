@@ -2,7 +2,7 @@ import unittest
 
 from tdavec import TDAvectorizer, tdavec_core, createEllipse
 from tdavec.tdavec_core import computeNormalizedLife, computeBettiCurve, computeVPB, computePersistenceLandscape, computePersistenceSilhouette, \
-    computeECC, computePES, computePI, computeFDA
+    computeEulerCharacteristic, computePersistentEntropy, computePI, computeFDA
 import ripser
 import numpy as np
 
@@ -67,23 +67,23 @@ class Testing_Functions(unittest.TestCase):
         self.assertTrue( lists_are_equal(python, R))
 
     def test_ECC_0(self):
-        python = computeECC(self.D, 0, self.scaleSeq)
+        python = computeEulerCharacteristic(self.D, 0, self.scaleSeq)
         R = [ 65.9281367702083, 7.31317883042165, 1, 1, 1, 1, 1, 1, 1, 1]
         self.assertTrue( lists_are_equal(python, R))
 
     def test_ECC_1(self):
-        python = computeECC(self.D, 1, self.scaleSeq)
+        python = computeEulerCharacteristic(self.D, 1, self.scaleSeq)
         R = [ 65.6439333961256, 5.93893484883312, -0.0280184848082246, 0, 0, 0, 0.653939249190704, 1, 1, 1]
         self.assertTrue( lists_are_equal(python, R))
 
     def test_PES_0(self):
-        python = computePES(self.D, 0, self.scaleSeq)
+        python = computePersistentEntropy(self.D, 0, self.scaleSeq)
         R = [ 4.82683006650221, 1.01731577228001, 0.372004512741568, 0.372004512741568, 0.372004512741568, 
              0.372004512741568, 0.372004512741568, 0.372004512741568, 0.372004512741568, 0.372004512741568]
         self.assertTrue( lists_are_equal(python, R))
 
     def test_PES_1(self):
-        python = computePES(self.D, 1, self.scaleSeq)
+        python = computePersistentEntropy(self.D, 1, self.scaleSeq)
         R = [ 0.0567767350968682, 0.264582251401072, 0.338458609058045, 0.347892602095769, 0.347892602095769, 
              0.347892602095769, 0.120391975082262, 0, 0, 0]
         self.assertTrue( lists_are_equal(python, R))

@@ -2,7 +2,7 @@ import numpy as np
 import ripser
 
 from  .tdavec_core import pmin, pmax, DiagToPD, \
-    computeVPB, computePersistenceLandscape, computePersistenceSilhouette, computeNormalizedLife, computeBettiCurve, computeECC, computePES, computePI,\
+    computeVPB, computePersistenceLandscape, computePersistenceSilhouette, computeNormalizedLife, computeBettiCurve, computeEulerCharacteristic, computePersistentEntropy, computePI,\
     computeVPB_dim0, computeVPB_dim1, computeFDA
 
 def pmax(num, vec):
@@ -102,7 +102,7 @@ class TDAvectorizer:
         if sigma is None:
             sigma = self.params["sigma"]
 
-#    computePES, computePI,\
+#    computePersistentEntropy, computePI,\
         if type(homDim) == int:
             if output == "vab":
                 return np.array([computeBettiCurve(d, homDim = homDim, scaleSeq = xSeq) for d in self.diags])
@@ -118,9 +118,9 @@ class TDAvectorizer:
             elif output == "nl":
                 return np.array([computeNormalizedLife(d, homDim = homDim, scaleSeq = xSeq) for d in self.diags])
             elif output == "ecc":
-                return np.array([computeECC(d, homDim, xSeq) for d in self.diags])
+                return np.array([computeEulerCharacteristic(d, homDim, xSeq) for d in self.diags])
             elif output == "pes":
-                return np.array([computePES(d, homDim = homDim, scaleSeq = xSeq) for d in self.diags])
+                return np.array([computePersistentEntropy(d, homDim = homDim, scaleSeq = xSeq) for d in self.diags])
             elif output == "pi":
                 return np.array([computePI(d, homDim = homDim, xSeq = xSeq, ySeq = ySeq, sigma = sigma) for d in self.diags])
             elif output == "fda":

@@ -239,7 +239,7 @@ def computeBettiCurve(D, homDim, scaleSeq):
         vab.append( sum(pmax(0,b))/(scaleSeq[k+1]-scaleSeq[k]))
     return np.array(vab)
 
-def computeECC(D, maxhomDim, scaleSeq):
+def computeEulerCharacteristic(D, maxhomDim, scaleSeq):
     """
     Compute the Euler Characteristic Curve (ECC) vectorization for a given homological dimension, maximum homological dimension, and scale sequence.
 
@@ -256,7 +256,7 @@ def computeECC(D, maxhomDim, scaleSeq):
         ecc = ecc + (-1)**d * computeBettiCurve(D, d, scaleSeq)
     return ecc
 
-def computePES(D, homDim, scaleSeq):
+def computePersistentEntropy(D, homDim, scaleSeq):
     """
     Compute the Persistence Entropy Summary (PES) vectorization for a given homological dimension, scale sequence, and persistence diagram.
 
