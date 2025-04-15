@@ -172,7 +172,7 @@ def computePersistenceLandscape(D, homDim, scaleSeq, k=1):
         for s in scaleSeq]
     return np.array(Lambda)
 
-def computePS(D, homDim, scaleSeq, p=1):
+def computePersistenceSilhouette(D, homDim, scaleSeq, p=1):
     """
     Compute the Persistence Silhouette vectorization for a given homological dimension, scale sequence, and power.
 

@@ -1,7 +1,7 @@
 import unittest
 
 from tdavec import TDAvectorizer, tdavec_core, createEllipse
-from tdavec.tdavec_core import computeNL, computeVAB, computeVPB, computePersistenceLandscape, computePS, \
+from tdavec.tdavec_core import computeNL, computeVAB, computeVPB, computePersistenceLandscape, computePersistenceSilhouette, \
     computeECC, computePES, computePI, computeFDA
 import ripser
 import numpy as np
@@ -30,14 +30,14 @@ class Testing_Functions(unittest.TestCase):
         self.assertTrue( lists_are_equal(python, R))
 
     def test_PS_0(self):
-        python = computePS(self.D, 0, self.scaleSeq)
+        python = computePersistenceSilhouette(self.D, 0, self.scaleSeq)
         R = [ 0.0507014405880279, 0.0420473568616778, 0.0615450397748265, 0.0861630556847571, 
              0.110781071594688, 0.110781071594688, 0.0861630556847571, 
              0.0615450397748265, 0.0369270238648959, 0.0123090079549653]
         self.assertTrue( lists_are_equal(python, R))
 
     def test_PS_1(self):
-        python = computePS(self.D, 1, self.scaleSeq)
+        python = computePersistenceSilhouette(self.D, 1, self.scaleSeq)
         R = [ 0.000119825669467705, 0.00125047122181634, 0.0651147889829073, 0.207585992499712,
               0.257838809390676, 0.120660660329335, 0.00853962588653096, 0, 0, 0]
         self.assertTrue( lists_are_equal(python, R))
