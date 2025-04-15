@@ -1,7 +1,7 @@
 import unittest
 
 from tdavec import TDAvectorizer, tdavec_core, createEllipse
-from tdavec.tdavec_core import computeNormalizedLife, computeVAB, computeVPB, computePersistenceLandscape, computePersistenceSilhouette, \
+from tdavec.tdavec_core import computeNormalizedLife, computeBettiCurve, computeVPB, computePersistenceLandscape, computePersistenceSilhouette, \
     computeECC, computePES, computePI, computeFDA
 import ripser
 import numpy as np
@@ -57,12 +57,12 @@ class Testing_Functions(unittest.TestCase):
         self.assertTrue( lists_are_equal(python, R))
 
     def test_VAB_0(self):
-        python = computeVAB(self.D, 0, self.scaleSeq)
+        python = computeBettiCurve(self.D, 0, self.scaleSeq)
         R = [ 65.9281367702083, 7.31317883042165, 1, 1, 1, 1, 1, 1, 1, 1]
         self.assertTrue( lists_are_equal(python, R))
 
     def test_VAB_1(self):
-        python = computeVAB(self.D, 1, self.scaleSeq)
+        python = computeBettiCurve(self.D, 1, self.scaleSeq)
         R = [ 0.284203374082668, 1.37424398158854, 1.02801848480822, 1, 1, 1, 0.346060750809296, 0, 0, 0]
         self.assertTrue( lists_are_equal(python, R))
 

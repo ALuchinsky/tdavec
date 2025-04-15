@@ -220,7 +220,7 @@ def computeNormalizedLife(D, homDim, scaleSeq):
         nl.append( np.sum(lL*pmax(0,b))/(scaleSeq[k+1]-scaleSeq[k]))
     return np.array(nl)
 
-def computeVAB(D, homDim, scaleSeq):
+def computeBettiCurve(D, homDim, scaleSeq):
     """
     Compute the Vector Summary of the Betti Curve    (VAB) vectorization for a given homological dimension, scale sequence, and power.
 
@@ -253,7 +253,7 @@ def computeECC(D, maxhomDim, scaleSeq):
     """
     ecc = np.zeros( len(scaleSeq)-1)
     for d in range(maxhomDim+1):
-        ecc = ecc + (-1)**d * computeVAB(D, d, scaleSeq)
+        ecc = ecc + (-1)**d * computeBettiCurve(D, d, scaleSeq)
     return ecc
 
 def computePES(D, homDim, scaleSeq):
