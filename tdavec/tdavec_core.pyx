@@ -200,7 +200,7 @@ def computePersistenceSilhouette(D, homDim, scaleSeq, p=1):
         phi.append( np.sum(w*(b1+b2))/(scaleSeq[k+1]-scaleSeq[k]))
     return np.array(phi)
 
-def computeNL(D, homDim, scaleSeq):
+def computeNormalizedLife(D, homDim, scaleSeq):
     """
     Compute theNormalized Life Curve vectorization for a given homological dimension, scale sequence, and power.
 

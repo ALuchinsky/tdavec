@@ -1,7 +1,7 @@
 import unittest
 
 from tdavec import TDAvectorizer, tdavec_core, createEllipse
-from tdavec.tdavec_core import computeNL, computeVAB, computeVPB, computePersistenceLandscape, computePersistenceSilhouette, \
+from tdavec.tdavec_core import computeNormalizedLife, computeVAB, computeVPB, computePersistenceLandscape, computePersistenceSilhouette, \
     computeECC, computePES, computePI, computeFDA
 import ripser
 import numpy as np
@@ -43,14 +43,14 @@ class Testing_Functions(unittest.TestCase):
         self.assertTrue( lists_are_equal(python, R))
 
     def test_NL_0(self):
-        python = computeNL(self.D, 0, self.scaleSeq)
+        python = computeNormalizedLife(self.D, 0, self.scaleSeq)
         R = [ 0.817130850366702, 0.234100823784605, 0.123090079549653, 0.123090079549653,
               0.123090079549653, 0.123090079549653, 0.123090079549653, 0.123090079549653, 
               0.123090079549653, 0.123090079549653]
         self.assertTrue( lists_are_equal(python, R))
 
     def test_NL_1(self):
-        python = computeNL(self.D, 1, self.scaleSeq)
+        python = computeNormalizedLife(self.D, 1, self.scaleSeq)
         R = [ 0.0130993953929026, 0.0631855672482697, 0.682417578522476, 
              0.713073264620286, 0.713073264620286, 0.713073264620286, 0.246766669336532, 
              0, 0, 0]
