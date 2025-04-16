@@ -2,6 +2,10 @@
 import numpy as np
 cimport numpy as np
 from cython.parallel import prange
+cimport numpy as np
+from libc.math cimport log2
+from cython cimport boundscheck, wraparound, nonecheck
+
 
 
 
@@ -412,3 +416,71 @@ def computeAlgebraicFunctions(PD, maxD, homDim = 0):
         np.sum( (maxD - pd[:,1])**2*pers**4)
     ]))
     
+# stats_cy.pyx
+
+@boundscheck(False)
+@wraparound(False)
+@nonecheck(False)
+def computeStats(list diag, int hom_dim):
+    cdef:
+        np.ndarray[np.double_t, ndim=2] data
+        np.ndarray[np.double_t] births, deaths, midpoints, lifespans
+        np.ndarray[np.double_t] stats
+        double L, entropy = 0.0
+        int i, n
+
+    if hom_dim < 0 or hom_dim >= len(diag):
+        raise IndexError("Invalid homology dimension")
+
+    data = diag[hom_dim]
+    if data.shape[0] == 0:
+        return _empty_result()
+
+    births = data[:, 0]
+    deaths = data[:, 1]
+
+    # Filter finite deaths
+    mask = np.isfinite(deaths)
+    births = births[mask]
+    deaths = deaths[mask]
+
+    if births.shape[0] == 0:
+        return _empty_result()
+
+    midpoints = (births + deaths) / 2
+    lifespans = deaths - births
+
+    stats = np.zeros(36, dtype=np.float64)
+    _calc_stats(births, stats, 0)
+    _calc_stats(deaths, stats, 9)
+    _calc_stats(midpoints, stats, 18)
+    _calc_stats(lifespans, stats, 27)
+
+    # Entropy
+    L = lifespans.sum()
+    if L > 0:
+        for i in range(lifespans.shape[0]):
+            stats[35] += -(lifespans[i] / L) * log2(lifespans[i] / L)
+
+    stats = np.concatenate([stats, np.array([births.shape[0]])])  # total_bars
+    return stats
+
+
+cdef _calc_stats(np.ndarray[np.double_t] arr, np.ndarray[np.double_t] out, int offset):
+    cdef:
+        np.ndarray[np.double_t] perc
+    perc = np.percentile(arr, [0, 10, 25, 50, 75, 90, 100])
+    out[offset + 0] = arr.mean()
+    out[offset + 1] = arr.std()
+    out[offset + 2] = perc[3]  # Median
+    out[offset + 3] = perc[4] - perc[2]  # IQR
+    out[offset + 4] = perc[6] - perc[0]  # Range
+    out[offset + 5] = perc[1]
+    out[offset + 6] = perc[2]
+    out[offset + 7] = perc[4]
+    out[offset + 8] = perc[5]
+
+
+cdef _empty_result():
+    return np.zeros(37, dtype=np.float64)
+
