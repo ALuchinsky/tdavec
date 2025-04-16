@@ -5,10 +5,7 @@ from cython.parallel import prange
 cimport numpy as np
 from libc.math cimport log2
 from cython cimport boundscheck, wraparound, nonecheck
-
-
-
-
+from libc.math cimport sqrt, cos, sin
 
 def DiagToPD(D):
     """
@@ -484,3 +481,72 @@ cdef _calc_stats(np.ndarray[np.double_t] arr, np.ndarray[np.double_t] out, int o
 cdef _empty_result():
     return np.zeros(37, dtype=np.float64)
 
+
+
+# Allow complex128 arrays
+ctypedef np.complex128_t complex_t
+
+# Helper function S(x, y)
+def S(np.ndarray[np.float64_t, ndim=1] x,
+      np.ndarray[np.float64_t, ndim=1] y):
+    cdef int n = x.shape[0]
+    cdef np.ndarray[np.float64_t, ndim=1] alpha = np.sqrt(x**2 + y**2)
+    cdef np.ndarray[np.float64_t, ndim=1] factor = (y - x) / (alpha * np.sqrt(2.0))
+    factor[~np.isfinite(alpha)] = 0.0
+    return factor * x + 1j * (factor * y)
+
+def T(np.ndarray[np.float64_t, ndim=1] x,
+      np.ndarray[np.float64_t, ndim=1] y):
+    cdef int n = x.shape[0]
+    cdef np.ndarray[np.float64_t, ndim=1] alpha = np.sqrt(x**2 + y**2)
+    cdef np.ndarray[np.float64_t, ndim=1] cos_alpha = np.cos(alpha)
+    cdef np.ndarray[np.float64_t, ndim=1] sin_alpha = np.sin(alpha)
+    cdef np.ndarray[np.float64_t, ndim=1] factor = (y - x) / 2.0
+    return factor * (cos_alpha - sin_alpha) + 1j * factor * (cos_alpha + sin_alpha)
+# Main function
+def computeComplexPolynomial(list diag,
+                             int homDim,
+                             int m=1,
+                             str polyType="R"):
+
+    if homDim >= len(diag):
+            raise ValueError("homDim exceeds number of diagram dimensions")
+
+    cdef np.ndarray[double, ndim=2] D = diag[homDim]
+    if D.shape[1] != 2:
+        raise ValueError("Each diagram must be an (n, 2) array")
+
+    x = D[:, 0]
+    y = D[:, 1]
+
+    # Remove non-finite death times
+    finite_mask = np.isfinite(y)
+    x = x[finite_mask]
+    y = y[finite_mask]
+
+    if x.shape[0] == 0:
+        return np.zeros((m, 2), dtype=np.float64)
+
+    if x.shape[0] < m:
+        raise ValueError("m must be less than or equal to the number of points in the diagram!")
+
+    # Compute complex roots
+    if polyType == "R":
+        roots = x + 1j * y
+    elif polyType == "S":
+        roots = S(x, y)
+    elif polyType == "T":
+        roots = T(x, y)
+    else:
+        raise ValueError("Choose between polyType = 'R', 'S', or 'T'.")
+
+    # Polynomial multiplication
+    poly = np.array([1.0 + 0j])  # Start with constant 1
+    for root in roots:
+        poly = np.convolve(poly, np.array([1.0, -root]))
+
+    # Get m coefficients, skipping the constant term
+    real_part = np.real(poly[1:m+1])
+    imag_part = np.imag(poly[1:m+1])
+
+    return np.column_stack((real_part, imag_part))

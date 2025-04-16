@@ -3,7 +3,8 @@ import ripser
 
 from  .tdavec_core import pmin, pmax, DiagToPD, \
     computePersistenceBlock, computePersistenceLandscape, computePersistenceSilhouette, computeNormalizedLife, computeBettiCurve, computeEulerCharacteristic, computePersistentEntropy, computePersistenceImage,\
-    computePersistenceBlock_dim0, computePersistenceBlock_dim1, computeFDA, computeAlgebraicFunctions, computeStats
+    computePersistenceBlock_dim0, computePersistenceBlock_dim1, computeFDA, computeAlgebraicFunctions, computeStats, \
+    computeComplexPolynomial
 
 def pmax(num, vec):
     """
@@ -131,6 +132,8 @@ class TDAvectorizer:
                 return np.array([computeAlgebraicFunctions(d, maxD, homDim=homDim) for d in self.diags])
             elif output == "stats":
                 return np.array([computeStats(d, homDim)  for d in self.diags])
+            elif output == "poly":
+                return np.array([computeComplexPolynomial(d, homDim)  for d in self.diags])
 
         elif type(homDim) == list:
             out = np.zeros( (len(self.diags), 0) )
