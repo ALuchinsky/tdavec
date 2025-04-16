@@ -401,3 +401,14 @@ def computeFDA(PD, maxD, homDim = 0, K = 10):
         X[2*m-1] = -np.sqrt(2)/c * np.sum(alpha_cos)
         X[2*m] = np.sqrt(2)/c * np.sum(alpha_sin)
     return X
+
+def computeAlgebraicFunctions(PD, maxD, homDim = 0):
+    pd = PD[homDim]
+    pers = pd[:,1]-pd[:,0]
+    return(np.array([
+        np.sum(pd[:,0]*pers),
+        np.sum( (maxD - pd[:,1])*pers),
+        np.sum( pd[:,0]**2 * pers**4),
+        np.sum( (maxD - pd[:,1])**2*pers**4)
+    ]))
+    
