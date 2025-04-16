@@ -6,6 +6,7 @@ cimport numpy as np
 from libc.math cimport log2
 from cython cimport boundscheck, wraparound, nonecheck
 from libc.math cimport sqrt, cos, sin
+from libc.math cimport fabs
 
 def DiagToPD(D):
     """
@@ -550,3 +551,72 @@ def computeComplexPolynomial(list diag,
     imag_part = np.imag(poly[1:m+1])
 
     return np.column_stack((real_part, imag_part))
+
+# distutils: language = c++
+# cython: boundscheck=False, wraparound=False, cdivision=True
+
+def tent_function_1D(np.ndarray[np.float64_t, ndim=1] y, double b, double delta) -> double:
+    cdef Py_ssize_t i, n = y.shape[0]
+    cdef double result = 0.0
+    cdef double diff
+    for i in range(n):
+        diff = fabs(y[i] - b)
+        result += max(0.0, 1.0 - (diff / delta))
+    return result
+
+def tent_function_2D(np.ndarray[np.float64_t, ndim=1] x,
+                     np.ndarray[np.float64_t, ndim=1] y,
+                     double a, double b, double delta) -> double:
+    cdef Py_ssize_t i, n = x.shape[0]
+    cdef double result = 0.0
+    cdef double dx, dy, max_dist
+    for i in range(n):
+        dx = fabs(x[i] - a)
+        dy = fabs(y[i] - b)
+        max_dist = max(dx, dy)
+        result += max(0.0, 1.0 - (max_dist / delta))
+    return result
+
+def computeTemplateFunction(list diagram, int homDim, double delta = 0.1, int d=20, double epsilon=0.01):
+    if delta < 0 or epsilon < 0:
+        raise ValueError("The arguments 'delta' and 'epsilon' must be positive!")
+
+    cdef np.ndarray[np.float64_t, ndim=2] D = diagram[homDim]
+    cdef np.ndarray[np.float64_t, ndim=1] x = D[:, 0]
+    cdef np.ndarray[np.float64_t, ndim=1] y = D[:, 1]
+    cdef np.ndarray[np.float64_t, ndim=1] tf = np.zeros(d, dtype=np.float64)
+
+    # Remove entries with non-finite death times
+    mask = np.isfinite(y)
+    x = x[mask]
+    y = y[mask]
+
+    if np.any(x < 0):
+        raise ValueError("The birth values must all be positive!")
+
+    cdef np.ndarray[np.float64_t, ndim=1] l = y - x
+    cdef Py_ssize_t i, j, idx
+    cdef double a, b
+
+    if x.size == 0:
+        return np.zeros((d+1)*d, dtype=np.float64)
+
+    sumX = np.sum(np.abs(np.diff(x)))
+    if homDim == 0 and sumX == 0:
+        center_l = np.linspace(delta, d * delta, d) + epsilon
+        for j in range(d):
+            tf[j] = tent_function_1D(l, center_l[j], delta)
+        return tf
+
+    cdef np.ndarray[np.float64_t, ndim=1] tf2 = np.zeros((d+1)*d, dtype=np.float64)
+    center_x = np.linspace(0, d * delta, d+1)
+    center_l = np.linspace(delta, d * delta, d) + epsilon
+
+    idx = 0
+    for i in range(d+1):
+        for j in range(d):
+            a = center_x[i]
+            b = center_l[j]
+            tf2[idx] = tent_function_2D(x, l, a, b, delta)
+            idx += 1
+    return tf2
