@@ -6,7 +6,7 @@ cimport numpy as np
 from libc.math cimport log2
 from cython cimport boundscheck, wraparound, nonecheck
 from libc.math cimport sqrt, cos, sin
-from libc.math cimport fabs
+from libc.math cimport fabs, fmax
 
 def DiagToPD(D):
     """
@@ -620,3 +620,77 @@ def computeTemplateFunction(list diagram, int homDim, double delta = 0.1, int d=
             tf2[idx] = tent_function_2D(x, l, a, b, delta)
             idx += 1
     return tf2
+
+
+@boundscheck(False)
+@wraparound(False)
+def computeTropicalCoordinates(list D, int homDim, int r=1):
+    """
+    Parameters:
+    - D: list of numpy arrays, one per homological dimension
+    - homDim: the homological dimension to use
+    - r: scalar multiplier for lifespans
+    Returns:
+    - dict with keys F1 through F7
+    """
+    if r <= 0:
+        raise ValueError("r must be a positive integer!")
+
+    if homDim >= len(D):
+        return {f"F{i+1}": 0.0 for i in range(7)}
+
+    cdef np.ndarray[np.float64_t, ndim=2] data = D[homDim]
+
+    if data.shape[0] == 0:
+        return {f"F{i+1}": 0.0 for i in range(7)}
+
+    # Extract x and y
+    cdef np.ndarray[np.float64_t, ndim=1] x = data[:, 0]
+    cdef np.ndarray[np.float64_t, ndim=1] y = data[:, 1]
+
+    finite_idx = np.isfinite(y)
+    x = x[finite_idx]
+    y = y[finite_idx]
+
+    if x.shape[0] == 0:
+        return {f"F{i+1}": 0.0 for i in range(7)}
+
+    cdef np.ndarray[np.float64_t, ndim=1] lambda_ = y - x
+    cdef np.ndarray[np.float64_t, ndim=1] l = np.sort(lambda_)[::-1]
+
+    # F1 to F4
+    cdef double F1 = l[0]
+    cdef double F2, F3, F4
+    cdef Py_ssize_t n = l.shape[0]
+
+    if n > 3:
+        F2 = l[0] + l[1]
+        F3 = F2 + l[2]
+        F4 = F3 + l[3]
+    elif n == 3:
+        F2 = l[0] + l[1]
+        F3 = F2 + l[2]
+        F4 = F3
+    elif n == 2:
+        F2 = l[0] + l[1]
+        F3 = F2
+        F4 = F2
+    else:
+        F2 = F1
+        F3 = F1
+        F4 = F1
+
+    F5 = np.sum(l)
+    d = np.minimum(r * lambda_, x)
+    F6 = np.sum(d)
+    F7 = np.sum(np.maximum(d + lambda_, 0) - (d + lambda_))
+
+    return {
+        "F1": F1,
+        "F2": F2,
+        "F3": F3,
+        "F4": F4,
+        "F5": F5,
+        "F6": F6,
+        "F7": F7
+    }

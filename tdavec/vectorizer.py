@@ -4,8 +4,7 @@ import ripser
 from  .tdavec_core import pmin, pmax, DiagToPD, \
     computePersistenceBlock, computePersistenceLandscape, computePersistenceSilhouette, computeNormalizedLife, computeBettiCurve, computeEulerCharacteristic, computePersistentEntropy, computePersistenceImage,\
     computePersistenceBlock_dim0, computePersistenceBlock_dim1, computeFDA, computeAlgebraicFunctions, computeStats, \
-    computeComplexPolynomial, computeTemplateFunction
-
+    computeComplexPolynomial, computeTemplateFunction, computeTropicalCoordinates
 def pmax(num, vec):
     """
     Compute the element-wise maximum of a scalar value and a NumPy array.
@@ -136,6 +135,8 @@ class TDAvectorizer:
                 return np.array([computeComplexPolynomial(d, homDim)  for d in self.diags])
             elif output == "func":
                 return np.array([computeTemplateFunction(d, homDim)  for d in self.diags])
+            elif output == "coords":
+                return np.array([computeTropicalCoordinates(d, homDim)  for d in self.diags])
 
         elif type(homDim) == list:
             out = np.zeros( (len(self.diags), 0) )
