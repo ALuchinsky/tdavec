@@ -2,8 +2,8 @@ import numpy as np
 import ripser
 
 from  .tdavec_core import pmin, pmax, DiagToPD, \
-    computeVPB, computePersistenceLandscape, computePersistenceSilhouette, computeNormalizedLife, computeBettiCurve, computeEulerCharacteristic, computePersistentEntropy, computePI,\
-    computeVPB_dim0, computeVPB_dim1, computeFDA
+    computePersistenceBlock, computePersistenceLandscape, computePersistenceSilhouette, computeNormalizedLife, computeBettiCurve, computeEulerCharacteristic, computePersistentEntropy, computePI,\
+    computePersistenceBlock_dim0, computePersistenceBlock_dim1, computeFDA
 
 def pmax(num, vec):
     """
@@ -107,7 +107,7 @@ class TDAvectorizer:
             if output == "vab":
                 return np.array([computeBettiCurve(d, homDim = homDim, scaleSeq = xSeq) for d in self.diags])
             elif output == "vpb":
-                out = np.array([computeVPB(d, homDim = homDim, xSeq = xSeq, ySeq = ySeq, tau = tau) for d in self.diags])
+                out = np.array([computePersistenceBlock(d, homDim = homDim, xSeq = xSeq, ySeq = ySeq, tau = tau) for d in self.diags])
                 if homDim == 1:
                     out = out.reshape( (out.shape[0], out.shape[1]*out.shape[2]))
                 return out

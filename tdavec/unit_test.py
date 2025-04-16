@@ -1,7 +1,7 @@
 import unittest
 
 from tdavec import TDAvectorizer, tdavec_core, createEllipse
-from tdavec.tdavec_core import computeNormalizedLife, computeBettiCurve, computeVPB, computePersistenceLandscape, computePersistenceSilhouette, \
+from tdavec.tdavec_core import computeNormalizedLife, computeBettiCurve, computePersistenceBlock, computePersistenceLandscape, computePersistenceSilhouette, \
     computeEulerCharacteristic, computePersistentEntropy, computePI, computeFDA
 import ripser
 import numpy as np
@@ -110,14 +110,14 @@ class Testing_Functions(unittest.TestCase):
 
     def test_VPB_0(self):
         ySeqH0 = np.quantile(self.D[0][:,1] - self.D[0][:,0] , np.arange(0, 1.1, 0.2))
-        vpb0 = computeVPB(self.D, homDim=0, xSeq = [], ySeq = ySeqH0)
+        vpb0 = computePersistenceBlock(self.D, homDim=0, xSeq = [], ySeq = ySeqH0)
         R = [ 0.809001048929071, 3.64481540058609, 5.48661206724003, 6.38281631026758, 1.01395250734014]
         self.assertTrue( lists_are_equal(vpb0, R))
 
     def test_VPB_1(self):
         xSeqH1 = np.quantile(self.D[1][:,0], np.arange(0, 1.1, 0.2))
         ySeqH1 = np.quantile(self.D[1][:,1]- self.D[1][:,0], np.arange(0, 1.1, 0.2))
-        vpb1 = computeVPB(self.D, homDim = 1, xSeq=xSeqH1, ySeq=ySeqH1)
+        vpb1 = computePersistenceBlock(self.D, homDim = 1, xSeq=xSeqH1, ySeq=ySeqH1)
         vpb1 = np.transpose(vpb1).reshape( (25,))
         R = [ 0, 0.000499559782281428, 0.00903377330326861, 0.0305098817964819, 
              0.00579736873795015, 0.00951944957273334, 0.0261053156675721, 0.0203673036116531, 

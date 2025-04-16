@@ -22,7 +22,7 @@ def DiagToPD(D):
     return PD
 
 
-def computeVPB_dim0(np.ndarray[np.float64_t, ndim=1] x, 
+def computePersistenceBlock_dim0(np.ndarray[np.float64_t, ndim=1] x, 
                     np.ndarray[np.float64_t, ndim=1] y, 
                     np.ndarray[np.float64_t, ndim=1] ySeq, 
                     np.ndarray[np.float64_t, ndim=1] lam):
@@ -81,7 +81,7 @@ def pmin(num, vec):
     """
     return np.array([min(num, vec[i_]) for i_ in range(vec.size)])
 
-def computeVPB_dim1(np.ndarray[np.float64_t, ndim=1] x, 
+def computePersistenceBlock_dim1(np.ndarray[np.float64_t, ndim=1] x, 
                     np.ndarray[np.float64_t, ndim=1] y, 
                     np.ndarray[np.float64_t, ndim=1] xSeq, 
                     np.ndarray[np.float64_t, ndim=1] ySeq, 
@@ -131,7 +131,7 @@ def computeVPB_dim1(np.ndarray[np.float64_t, ndim=1] x,
                 vpb[i, j] += add
     return np.asarray(vpb)
 
-def computeVPB(D, homDim, xSeq, ySeq, tau=0.3):
+def computePersistenceBlock(D, homDim, xSeq, ySeq, tau=0.3):
     """
     Compute the VPB vectorization using the given parameters.
 
@@ -149,9 +149,9 @@ def computeVPB(D, homDim, xSeq, ySeq, tau=0.3):
     y = D[homDim][:,1] - x
     lam = tau * y
     if homDim == 0:
-        return computeVPB_dim0(x, y, ySeq, lam)
+        return computePersistenceBlock_dim0(x, y, ySeq, lam)
     else:
-        return computeVPB_dim1(x, y, xSeq, ySeq, lam)
+        return computePersistenceBlock_dim1(x, y, xSeq, ySeq, lam)
 
 def computePersistenceLandscape(D, homDim, scaleSeq, k=1):
     """
