@@ -348,7 +348,7 @@ def PSurfaceHk(point, y_lower, y_upper, x_lower, x_upper, sigma, maxP):
     wgt = y/maxP if y<maxP else 1
     return wgt*outer(out1, out2)
 
-def computePI(D, homDim, xSeq, ySeq, sigma):
+def computePersistenceImage(D, homDim, xSeq, ySeq, sigma):
     """
     Compute the surface Persistence Image (PI) vectorization for a given Persistence diagram
 

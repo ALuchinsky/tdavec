@@ -2,7 +2,7 @@ import numpy as np
 import ripser
 
 from  .tdavec_core import pmin, pmax, DiagToPD, \
-    computePersistenceBlock, computePersistenceLandscape, computePersistenceSilhouette, computeNormalizedLife, computeBettiCurve, computeEulerCharacteristic, computePersistentEntropy, computePI,\
+    computePersistenceBlock, computePersistenceLandscape, computePersistenceSilhouette, computeNormalizedLife, computeBettiCurve, computeEulerCharacteristic, computePersistentEntropy, computePersistenceImage,\
     computePersistenceBlock_dim0, computePersistenceBlock_dim1, computeFDA
 
 def pmax(num, vec):
@@ -102,7 +102,7 @@ class TDAvectorizer:
         if sigma is None:
             sigma = self.params["sigma"]
 
-#    computePersistentEntropy, computePI,\
+#    computePersistentEntropy, computePersistenceImage,\
         if type(homDim) == int:
             if output == "vab":
                 return np.array([computeBettiCurve(d, homDim = homDim, scaleSeq = xSeq) for d in self.diags])
@@ -122,7 +122,7 @@ class TDAvectorizer:
             elif output == "pes":
                 return np.array([computePersistentEntropy(d, homDim = homDim, scaleSeq = xSeq) for d in self.diags])
             elif output == "pi":
-                return np.array([computePI(d, homDim = homDim, xSeq = xSeq, ySeq = ySeq, sigma = sigma) for d in self.diags])
+                return np.array([computePersistenceImage(d, homDim = homDim, xSeq = xSeq, ySeq = ySeq, sigma = sigma) for d in self.diags])
             elif output == "fda":
                 maxD = self.findLimits(homDim)["maxD"]
                 return np.array([computeFDA(d, maxD, homDim=homDim, K=self.params["kFDA"]) for d in self.diags])

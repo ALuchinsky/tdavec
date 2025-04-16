@@ -2,7 +2,7 @@ import unittest
 
 from tdavec import TDAvectorizer, tdavec_core, createEllipse
 from tdavec.tdavec_core import computeNormalizedLife, computeBettiCurve, computePersistenceBlock, computePersistenceLandscape, computePersistenceSilhouette, \
-    computeEulerCharacteristic, computePersistentEntropy, computePI, computeFDA
+    computeEulerCharacteristic, computePersistentEntropy, computePersistenceImage, computeFDA
 import ripser
 import numpy as np
 
@@ -133,7 +133,7 @@ class Testing_Functions(unittest.TestCase):
         ySeqH0 = np.linspace(minPH0, maxPH0, resP+1)
         xSeqH0 = np.zeros( resB+1)
         sigma = 0.5*(maxPH0-minPH0)/resP
-        pi0 = computePI(self.D, homDim = 0, xSeq = xSeqH0, ySeq = ySeqH0, sigma = sigma)
+        pi0 = computePersistenceImage(self.D, homDim = 0, xSeq = xSeqH0, ySeq = ySeqH0, sigma = sigma)
         pi0_R = [ 4.56670703042467, 0.965627354019496, 0.0113500659339766, 0.0227233996700507, 0.477249868112126]
         self.assertTrue( lists_are_equal(pi0, pi0_R))
 
@@ -144,7 +144,7 @@ class Testing_Functions(unittest.TestCase):
         minPH1, maxPH1 = np.min(self.D[1][:,1] - self.D[1][:,0]), np.max(self.D[1][:,1] - self.D[1][:,0])
         ySeqH1 = np.linspace(minPH1, maxPH1, resP+1)
         sigma = 0.5*(maxPH1-minPH1)/resP
-        pi1 = computePI(self.D, homDim = 1, xSeq = xSeqH1, ySeq = ySeqH1, sigma = sigma)
+        pi1 = computePersistenceImage(self.D, homDim = 1, xSeq = xSeqH1, ySeq = ySeqH1, sigma = sigma)
         pi1_R = [ 0.0437160130945874, 0.0495556729840402, 0.0451237783565141, 0.0329995660586893, 0.0186444239574634, 
                  0.00752765376757397, 0.00776084705021553, 0.00630598644271661, 0.00425097166237492, 0.00227854726438653, 
                  6.03800613955066e-05, 5.84101446147877e-05, 4.42739912785808e-05, 3.09472597878289e-05, 
