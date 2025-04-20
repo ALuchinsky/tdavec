@@ -413,74 +413,101 @@ def computeAlgebraicFunctions(PD, maxD, homDim = 0):
         np.sum( pd[:,0]**2 * pers**4),
         np.sum( (maxD - pd[:,1])**2*pers**4)
     ]))
-    
-# stats_cy.pyx
 
-@boundscheck(False)
-@wraparound(False)
-@nonecheck(False)
-def computeStats(list diag, int hom_dim):
-    cdef:
-        np.ndarray[np.double_t, ndim=2] data
-        np.ndarray[np.double_t] births, deaths, midpoints, lifespans
-        np.ndarray[np.double_t] stats
-        double L, entropy = 0.0
-        int i, n
 
-    if hom_dim < 0 or hom_dim >= len(diag):
-        raise IndexError("Invalid homology dimension")
+#========= computeStats
+# distutils: language = c++
+# cython: boundscheck=False, wraparound=False, nonecheck=False
 
-    data = diag[hom_dim]
-    if data.shape[0] == 0:
+# Expose this to Python
+def computeStats(list diagrams, int hom_dim):
+    if hom_dim < 0 or hom_dim >= len(diagrams):
+        raise ValueError("Invalid homological dimension index.")
+
+    cdef np.ndarray[np.float64_t, ndim=2] D = diagrams[hom_dim]
+    cdef Py_ssize_t n_rows = D.shape[0]
+
+    if n_rows == 0:
         return _empty_result()
 
-    births = data[:, 0]
-    deaths = data[:, 1]
+    cdef np.float64_t[:, :] D_view = D
+    cdef list x_list = []
+    cdef list y_list = []
+    cdef int i
+    cdef int j
+    cdef double val
 
-    # Filter finite deaths
-    mask = np.isfinite(deaths)
-    births = births[mask]
-    deaths = deaths[mask]
 
-    if births.shape[0] == 0:
+    for i in range(n_rows):
+        if np.isfinite(D_view[i, 1]):
+            x_list.append(D_view[i, 0])
+            y_list.append(D_view[i, 1])
+
+    cdef int total_bars = len(x_list)
+    if total_bars == 0:
         return _empty_result()
 
-    midpoints = (births + deaths) / 2
-    lifespans = deaths - births
+    cdef np.ndarray[np.float64_t, ndim=1] x = np.array(x_list, dtype=np.float64)
+    cdef np.ndarray[np.float64_t, ndim=1] y = np.array(y_list, dtype=np.float64)
+    cdef np.ndarray[np.float64_t, ndim=1] mid = (x + y) / 2
+    cdef np.ndarray[np.float64_t, ndim=1] l = y - x
 
-    stats = np.zeros(36, dtype=np.float64)
-    _calc_stats(births, stats, 0)
-    _calc_stats(deaths, stats, 9)
-    _calc_stats(midpoints, stats, 18)
-    _calc_stats(lifespans, stats, 27)
+    cdef stats_births = _calc_stats(x)
+    cdef stats_deaths = _calc_stats(y)
+    cdef stats_midpoints = _calc_stats(mid)
+    cdef stats_lifespans = _calc_stats(l)
 
-    # Entropy
-    L = lifespans.sum()
+    cdef double L = np.sum(l)
+    cdef double entropy = 0.0
     if L > 0:
-        for i in range(lifespans.shape[0]):
-            stats[35] += -(lifespans[i] / L) * log2(lifespans[i] / L)
+        for j in range(l.shape[0]):
+            val = l[j] / L
+            entropy -= val * log2(val)
 
-    stats = np.concatenate([stats, np.array([births.shape[0]])])  # total_bars
-    return stats
+    cdef dict out = {}
+    cdef list keys = ['births', 'deaths', 'midpoints', 'lifespans']
+    cdef list names = ['mean', 'stddev', 'median', 'iqr', 'range', 'p10', 'p25', 'p75', 'p90']
+    cdef int s_idx
+    for k, stats in zip(keys, [stats_births, stats_deaths, stats_midpoints, stats_lifespans]):
+        for s_idx, name in enumerate(names):
+            out[f"{name}_{k}"] = stats[s_idx]
 
-
-cdef _calc_stats(np.ndarray[np.double_t] arr, np.ndarray[np.double_t] out, int offset):
-    cdef:
-        np.ndarray[np.double_t] perc
-    perc = np.percentile(arr, [0, 10, 25, 50, 75, 90, 100])
-    out[offset + 0] = arr.mean()
-    out[offset + 1] = arr.std(ddof = 1)
-    out[offset + 2] = perc[3]  # Median
-    out[offset + 3] = perc[4] - perc[2]  # IQR
-    out[offset + 4] = perc[6] - perc[0]  # Range
-    out[offset + 5] = perc[1]
-    out[offset + 6] = perc[2]
-    out[offset + 7] = perc[4]
-    out[offset + 8] = perc[5]
+    out["total_bars"] = total_bars
+    out["entropy"] = entropy
+    return out
 
 
-cdef _empty_result():
-    return np.zeros(37, dtype=np.float64)
+cdef np.ndarray[np.float64_t, ndim=1] _calc_stats(np.ndarray[np.float64_t, ndim=1] values):
+    cdef np.ndarray[np.float64_t, ndim=1] result = np.zeros(9, dtype=np.float64)
+    if values.shape[0] == 0:
+        return result
+
+    cdef np.ndarray[np.float64_t, ndim=1] P = np.array([0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0])
+    cdef np.ndarray[np.float64_t, ndim=1] qt = np.quantile(values, P)
+
+    result[0] = np.mean(values)
+    result[1] = np.std(values, ddof=1)
+    result[2] = qt[3]  # Median
+    result[3] = qt[4] - qt[2]  # IQR
+    result[4] = qt[6] - qt[0]  # Range
+    result[5] = qt[1]  # 10th percentile
+    result[6] = qt[2]  # 25th percentile
+    result[7] = qt[4]  # 75th percentile
+    result[8] = qt[5]  # 90th percentile
+
+    return result
+
+
+cdef dict _empty_result():
+    cdef dict d = {}
+    cdef list names = ['mean', 'stddev', 'median', 'iqr', 'range', 'p10', 'p25', 'p75', 'p90']
+    cdef list keys = ['births', 'deaths', 'midpoints', 'lifespans']
+    for k in keys:
+        for n in names:
+            d[f"{n}_{k}"] = 0.0
+    d["total_bars"] = 0
+    d["entropy"] = 0.0
+    return d
 
 
 
