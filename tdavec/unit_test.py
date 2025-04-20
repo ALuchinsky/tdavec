@@ -2,7 +2,7 @@ import unittest
 
 from tdavec import TDAvectorizer, tdavec_core, createEllipse
 from tdavec.tdavec_core import computeNormalizedLife, computeBettiCurve, computePersistenceBlock, computePersistenceLandscape, computePersistenceSilhouette, \
-    computeEulerCharacteristic, computePersistentEntropy, computePersistenceImage, computeFDA
+    computeEulerCharacteristic, computePersistentEntropy, computePersistenceImage, computeComplexPolynomial, computeFDA
 import ripser
 import numpy as np
 
@@ -153,6 +153,15 @@ class Testing_Functions(unittest.TestCase):
                  0.108645123651971, 0.12972698923131] 
         self.assertTrue( lists_are_equal(pi1, pi1_R))
 
+    def test_complex_poly_0(self):
+        poly0 = computeComplexPolynomial(self.D, homDim = 0)
+        poly0_R = np.array([0, -16.248263120126])
+        self.assertTrue( lists_are_equal(poly0, poly0_R))
+
+    def test_complex_poly_1(self):
+        poly1 = computeComplexPolynomial(self.D, homDim = 1)
+        poly1_R = np.array([-3.81072113328258, -5.01722645154033])
+        self.assertTrue( lists_are_equal(poly1, poly1_R))
 
 class Testing_Class(unittest.TestCase):
     def setUp(self):
