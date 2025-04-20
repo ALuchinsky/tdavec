@@ -2,7 +2,7 @@ import unittest
 
 from tdavec import TDAvectorizer, tdavec_core, createEllipse
 from tdavec.tdavec_core import computeNormalizedLife, computeBettiCurve, computePersistenceBlock, computePersistenceLandscape, computePersistenceSilhouette, \
-    computeEulerCharacteristic, computePersistentEntropy, computePersistenceImage, computeComplexPolynomial, computeFDA, computeTropicalCoordinates
+    computeEulerCharacteristic, computePersistentEntropy, computePersistenceImage, computeComplexPolynomial, computeFDA, computeTropicalCoordinates, computeTemplateFunction
 import ripser
 import numpy as np
 
@@ -171,6 +171,18 @@ class Testing_Functions(unittest.TestCase):
     def test_tropical_coords_1(self):
         dat = computeTropicalCoordinates(self.D, homDim = 1)
         dat_R = np.array([ 0.860326686071788, 0.954869453646198, 1.02284830582612, 1.0654713502642, 1.20650531825775, 0.755064096276033, 14.5381885375704])
+        self.assertTrue( lists_are_equal(dat[:-1], dat_R[:-1]))
+
+    def test_temp_func_0(self):
+        dat = computeTemplateFunction(self.D, homDim = 0)
+        dat_R = np.array( [47.7068836896669, 27.5322316257831, 9.10973719256688, 0.620518170581516, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0999999999999992, 0.900000000000002])
+        self.assertTrue( lists_are_equal(dat[:-1], dat_R[:-1]))
+
+    def test_temp_func_1(self):
+        dat = computeTemplateFunction(self.D, homDim = 1)
+        dat_R = np.array([
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.468406748165331, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.75451666854592, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.13899057979361, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.365103088717902, 0, 0, 0, 0, 0, 0, 0.496733139282122, 0.503266860717878, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0355717802395706, 0, 0, 0, 0, 0, 0, 0.0888546409007165, 0.0888546409007165, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 
+        ])
         self.assertTrue( lists_are_equal(dat[:-1], dat_R[:-1]))
 
 class Testing_Class(unittest.TestCase):
