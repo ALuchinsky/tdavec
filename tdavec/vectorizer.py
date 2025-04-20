@@ -42,7 +42,7 @@ def createEllipse(n = 100, a = 1, b = 1, eps = 0.1):
 
 class TDAvectorizer:
 
-    def __init__(self, params = {"output": "vpb", "threshold": 2, "inf": None, "maxDim": 1,
+    def __init__(self, params = {"output": "vpb", "threshold": 2, "inf": "threshold", "maxDim": 1,
                                  "scale": None, "nGrid": 11, "quantiles": False, "tau": 0.3,
                                    "k":1, "sigma": 1, "kFDA":10}):
         self.diags = []
@@ -67,10 +67,12 @@ class TDAvectorizer:
         self.diags = []
         for d in data:
             diag_ = ripser.ripser(d, thresh=self.params["threshold"])["dgms"]
-            if self.params["inf"] is not None:
-                diag_[0][-1, 1] = self.params["inf"]
-            else:
+            if self.params["inf"] is None:
                 diag_[0] = diag_[0][:-1,:]
+            elif self.params["inf"] == "threshold":
+                diag_[0][-1, 1] = self.params["threshold"]
+            else:
+                diag_[0][-1, 1] = self.params["inf"]
             self.diags.append(diag_)
         if self.params["scale"] is None:
             limits1 = self.findLimits(1)

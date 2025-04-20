@@ -469,7 +469,7 @@ cdef _calc_stats(np.ndarray[np.double_t] arr, np.ndarray[np.double_t] out, int o
         np.ndarray[np.double_t] perc
     perc = np.percentile(arr, [0, 10, 25, 50, 75, 90, 100])
     out[offset + 0] = arr.mean()
-    out[offset + 1] = arr.std()
+    out[offset + 1] = arr.std(ddof = 1)
     out[offset + 2] = perc[3]  # Median
     out[offset + 3] = perc[4] - perc[2]  # IQR
     out[offset + 4] = perc[6] - perc[0]  # Range
