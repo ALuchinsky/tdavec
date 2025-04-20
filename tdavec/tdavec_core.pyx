@@ -420,7 +420,7 @@ def computeAlgebraicFunctions(PD, maxD, homDim = 0):
 # cython: boundscheck=False, wraparound=False, nonecheck=False
 
 # Expose this to Python
-def computeStats(list diagrams, int hom_dim):
+def computeStats(list diagrams, int hom_dim, to_list = True):
     if hom_dim < 0 or hom_dim >= len(diagrams):
         raise ValueError("Invalid homological dimension index.")
 
@@ -474,6 +474,8 @@ def computeStats(list diagrams, int hom_dim):
 
     out["total_bars"] = total_bars
     out["entropy"] = entropy
+    if to_list:
+        out = np.array(list(out.values()))
     return out
 
 
@@ -648,6 +650,8 @@ def computeTemplateFunction(list diagram, int homDim, double delta = 0.1, int d=
             idx += 1
     return tf2
 
+def dict_to_array(d):
+    return np.array(list(d.values()))
 
 @boundscheck(False)
 @wraparound(False)
@@ -663,13 +667,18 @@ def computeTropicalCoordinates(list D, int homDim, int r=1, to_list = True):
     if r <= 0:
         raise ValueError("r must be a positive integer!")
 
+    cdef out  = dict()
+    cdef out0 = {f"F{i+1}": 0.0 for i in range(7)}
+    if to_list:
+        out0 = dict_to_array(out0) 
+
     if homDim >= len(D):
-        return {f"F{i+1}": 0.0 for i in range(7)}
+        return out0
 
     cdef np.ndarray[np.float64_t, ndim=2] data = D[homDim]
 
     if data.shape[0] == 0:
-        return {f"F{i+1}": 0.0 for i in range(7)}
+        return out0
 
     # Extract x and y
     cdef np.ndarray[np.float64_t, ndim=1] x = data[:, 0]
@@ -679,8 +688,9 @@ def computeTropicalCoordinates(list D, int homDim, int r=1, to_list = True):
     x = x[finite_idx]
     y = y[finite_idx]
 
+
     if x.shape[0] == 0:
-        return {f"F{i+1}": 0.0 for i in range(7)}
+        out =  out0
 
     cdef np.ndarray[np.float64_t, ndim=1] lambda_ = y - x
     cdef np.ndarray[np.float64_t, ndim=1] l = np.sort(lambda_)[::-1]
@@ -712,7 +722,7 @@ def computeTropicalCoordinates(list D, int homDim, int r=1, to_list = True):
     F6 = np.sum(d)
     F7 = np.sum(np.maximum(d + lambda_, 0) - (d + lambda_))
 
-    cdef out =  {
+    out =  {
         "F1": F1,
         "F2": F2,
         "F3": F3,
@@ -723,6 +733,6 @@ def computeTropicalCoordinates(list D, int homDim, int r=1, to_list = True):
     }
 
     if to_list:
-        out = np.array(list(out.values()))
+        out = dict_to_array(out)
 
     return out

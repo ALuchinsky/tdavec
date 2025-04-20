@@ -140,7 +140,9 @@ class TDAvectorizer:
             elif output == "stats":
                 return np.array([computeStats(d, homDim)  for d in self.diags])
             elif output == "poly":
-                return np.array([computeComplexPolynomial(d, homDim)  for d in self.diags])
+                out = np.array([computeComplexPolynomial(d, homDim)  for d in self.diags])
+                out = out[:,0,:]
+                return out
             elif output == "func":
                 return np.array([computeTemplateFunction(d, homDim)  for d in self.diags])
             elif output == "coords":
