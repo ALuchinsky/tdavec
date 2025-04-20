@@ -2,7 +2,7 @@ import unittest
 
 from tdavec import TDAvectorizer, tdavec_core, createEllipse
 from tdavec.tdavec_core import computeNormalizedLife, computeBettiCurve, computePersistenceBlock, computePersistenceLandscape, computePersistenceSilhouette, \
-    computeEulerCharacteristic, computePersistentEntropy, computePersistenceImage, computeComplexPolynomial, computeFDA
+    computeEulerCharacteristic, computePersistentEntropy, computePersistenceImage, computeComplexPolynomial, computeFDA, computeTropicalCoordinates
 import ripser
 import numpy as np
 
@@ -162,6 +162,16 @@ class Testing_Functions(unittest.TestCase):
         poly1 = computeComplexPolynomial(self.D, homDim = 1)
         poly1_R = np.array([-3.81072113328258, -5.01722645154033])
         self.assertTrue( lists_are_equal(poly1, poly1_R))
+
+    def test_tropical_coords_0(self):
+        dat = computeTropicalCoordinates(self.D, homDim = 0)
+        dat_R = np.array([2, 2.36289119595766, 2.68205181705815, 2.98638484543615, 16.248263120126, 0, 183.751736879874])
+        self.assertTrue( lists_are_equal(dat[:-1], dat_R[:-1]))
+    
+    def test_tropical_coords_1(self):
+        dat = computeTropicalCoordinates(self.D, homDim = 1)
+        dat_R = np.array([ 0.860326686071788, 0.954869453646198, 1.02284830582612, 1.0654713502642, 1.20650531825775, 0.755064096276033, 14.5381885375704])
+        self.assertTrue( lists_are_equal(dat[:-1], dat_R[:-1]))
 
 class Testing_Class(unittest.TestCase):
     def setUp(self):

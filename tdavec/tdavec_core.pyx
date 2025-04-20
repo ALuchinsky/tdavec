@@ -651,7 +651,7 @@ def computeTemplateFunction(list diagram, int homDim, double delta = 0.1, int d=
 
 @boundscheck(False)
 @wraparound(False)
-def computeTropicalCoordinates(list D, int homDim, int r=1):
+def computeTropicalCoordinates(list D, int homDim, int r=1, to_list = True):
     """
     Parameters:
     - D: list of numpy arrays, one per homological dimension
@@ -712,7 +712,7 @@ def computeTropicalCoordinates(list D, int homDim, int r=1):
     F6 = np.sum(d)
     F7 = np.sum(np.maximum(d + lambda_, 0) - (d + lambda_))
 
-    return {
+    cdef out =  {
         "F1": F1,
         "F2": F2,
         "F3": F3,
@@ -721,3 +721,8 @@ def computeTropicalCoordinates(list D, int homDim, int r=1):
         "F6": F6,
         "F7": F7
     }
+
+    if to_list:
+        out = np.array(list(out.values()))
+
+    return out
