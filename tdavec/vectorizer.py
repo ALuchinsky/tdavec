@@ -47,7 +47,13 @@ class TDAvectorizer:
                                    "k":1, "sigma": 1, "kFDA":10}):
         self.diags = []
         self.params = params
+
+        self.vectorization_names = [
+            "vab", "vpb", "pl", "ps", "nl", "ecc", "pes", "pi", "fda", "algebra", "stats", "poly", 
+            "func", "coords"
+        ]
         return 
+
     def getParams(self, varName = None):
         if varName is not None:
             return self.params[varName]
