@@ -23,6 +23,11 @@ def DiagToPD(D):
     PD = [ np.transpose(np.array([D[dim][:,0], D[dim][:,1] - D[dim][:,0]])) for dim in range(len(D))]
     return PD
 
+def dict_to_array(d, to_list = True):
+    if to_list:
+        return np.array(list(d.values()))
+    else:
+        return d
 
 def computePersistenceBlock_dim0(np.ndarray[np.float64_t, ndim=1] x, 
                     np.ndarray[np.float64_t, ndim=1] y, 
@@ -168,6 +173,8 @@ def computePersistenceLandscape(D, homDim, scaleSeq, k=1):
     Returns:
         numpy.ndarray: The persistence landscape vector.
     """
+    if D[homDim].shape[0] == 0:
+        return np.zeros( len(scaleSeq))
     birth, death = D[homDim][:,0], D[homDim][:,1]
     Lambda = [
         np.sort(pmax(0, np.apply_along_axis(min, 0, np.array([s-birth, death-s]))))[-k]
@@ -365,7 +372,7 @@ def computePersistenceImage(D, homDim, xSeq, ySeq, sigma):
         numpy.ndarray: The surface probability density function values for each data point.
 
     """
-    D_ = D[homDim]
+    D_ = D[homDim].copy()
     D_[:,1] = D_[:,1] - D_[:,0]
     n_rows = D_.shape[0]
 
@@ -428,7 +435,7 @@ def computeStats(list diagrams, int hom_dim, to_list = True):
     cdef Py_ssize_t n_rows = D.shape[0]
 
     if n_rows == 0:
-        return _empty_result()
+        return _empty_result(to_list)
 
     cdef np.float64_t[:, :] D_view = D
     cdef list x_list = []
@@ -445,7 +452,7 @@ def computeStats(list diagrams, int hom_dim, to_list = True):
 
     cdef int total_bars = len(x_list)
     if total_bars == 0:
-        return _empty_result()
+        return _empty_result(to_list)
 
     cdef np.ndarray[np.float64_t, ndim=1] x = np.array(x_list, dtype=np.float64)
     cdef np.ndarray[np.float64_t, ndim=1] y = np.array(y_list, dtype=np.float64)
@@ -474,14 +481,12 @@ def computeStats(list diagrams, int hom_dim, to_list = True):
 
     out["total_bars"] = total_bars
     out["entropy"] = entropy
-    if to_list:
-        out = np.array(list(out.values()))
-    return out
+    return dict_to_array(out, to_list)
 
 
 cdef np.ndarray[np.float64_t, ndim=1] _calc_stats(np.ndarray[np.float64_t, ndim=1] values):
     cdef np.ndarray[np.float64_t, ndim=1] result = np.zeros(9, dtype=np.float64)
-    if values.shape[0] == 0:
+    if values.shape[0] < 2:
         return result
 
     cdef np.ndarray[np.float64_t, ndim=1] P = np.array([0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0])
@@ -500,7 +505,7 @@ cdef np.ndarray[np.float64_t, ndim=1] _calc_stats(np.ndarray[np.float64_t, ndim=
     return result
 
 
-cdef dict _empty_result():
+cdef _empty_result(to_list = True):
     cdef dict d = {}
     cdef list names = ['mean', 'stddev', 'median', 'iqr', 'range', 'p10', 'p25', 'p75', 'p90']
     cdef list keys = ['births', 'deaths', 'midpoints', 'lifespans']
@@ -509,7 +514,7 @@ cdef dict _empty_result():
             d[f"{n}_{k}"] = 0.0
     d["total_bars"] = 0
     d["entropy"] = 0.0
-    return d
+    return dict_to_array(d, to_list)
 
 
 
@@ -650,8 +655,6 @@ def computeTemplateFunction(list diagram, int homDim, double delta = 0.1, int d=
             idx += 1
     return tf2
 
-def dict_to_array(d):
-    return np.array(list(d.values()))
 
 @boundscheck(False)
 @wraparound(False)
@@ -669,8 +672,7 @@ def computeTropicalCoordinates(list D, int homDim, int r=1, to_list = True):
 
     cdef out  = dict()
     cdef out0 = {f"F{i+1}": 0.0 for i in range(7)}
-    if to_list:
-        out0 = dict_to_array(out0) 
+    out0 = dict_to_array(out0, to_list) 
 
     if homDim >= len(D):
         return out0
@@ -732,7 +734,6 @@ def computeTropicalCoordinates(list D, int homDim, int r=1, to_list = True):
         "F7": F7
     }
 
-    if to_list:
-        out = dict_to_array(out)
+    out = dict_to_array(out, to_list)
 
     return out
