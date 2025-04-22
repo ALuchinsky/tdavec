@@ -1,0 +1,10 @@
+rm -rf build/ dist/ *.egg-info
+find tdavec/ -name '*.so' -delete
+find tdavec/ -name '*.c' -delete
+find tdavec/ -name '*.pyc' -delete
+find tdavec/ -name '__pycache__' -exec rm -r {} +
+
+pip uninstall -y tdavec
+
+pip install .
+
