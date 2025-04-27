@@ -1,35 +1,58 @@
-# Python Interface to TDAvec package
+# TDAvec.py
 
-In this repository we describe the python interface to R package `TDAvec`, which can be installed from CRAN
+`TDAvec.py` is a python interface to `TDAvec` R package, which is available on [CRAN](https://cran.r-project.org/web/packages/TDAvec/index.html)
 
-## Installation instructions
+First of all, it allows access to all implemented in the original R package vectorizations functions:
+
+* computeAlgebraicFunctions:	Compute Algebraic Functions from a Persistence Diagram
+* computeBettiCurve:	A Vector Summary of the Betti Curve
+* computeComplexPolynomial:	Compute Complex Polynomial Coefficients from a Persistence Diagram
+* computeEulerCharacteristic:	A Vector Summary of the Euler Characteristic Curve
+* computeNormalizedLife:	A Vector Summary of the Normalized Life Curve
+* computePersistenceBlock:	A Vector Summary of the Persistence Block
+* computePersistenceImage:	A Vector Summary of the Persistence Surface
+* computePersistenceLandscape:	Vector Summaries of the Persistence Landscape Functions
+* computePersistenceSilhouette:	A Vector Summary of the Persistence Silhouette Function
+* computePersistentEntropy:	A Vector Summary of the Persistent Entropy Summary Function
+* computeStats:	Compute Descriptive Statistics for Births, Deaths, Midpoints, and Lifespans in a Persistence Diagram
+* computeTemplateFunction:	Compute a Vectorization of a Persistence Diagram based on Tent Template Functions
+* computeTropicalCoordinates:	Compute Tropical Coordinates from a Persistence Diagram
+
+All these functions can easily be called using `tdavec.tdavec_core` package.
+
+In addition, we provide also `sklearn`-type interface to the same functionality, which could be more familiar for python programmers.
+
+Note that the package was tested only on python 3.12. 
+
+# Setup
+
+`TDAvec.py` is available on `pypi`. To install it simply type
+
+    pip install tdavec
+
+into your environment. 
+
+You can also install the current verion from the GitHub with
+
+    pip install git+https://github.com/ALuchinsky/tdavect
+
+Alternatively, you can install it from the source. In order to do this clone mentioned above github repository and run the followin commants from the project root directory:
 
 
-First, you need to create a clean python environment. From the project root directory run:
+    pip install numpy==1.26.4 ripser==0.6.8
+    python3 setup.py build_ext --inplace
+    pip install .
 
-    > python3 -m venv venv
-    > source venv/bin/activate
-    > pip install numpy==1.26.4 ripser==0.6.8
+after that you should have `tdavec` package installed in your environment. 
 
-Now compile and install the package:
 
-    > python3 setup.py build_ext --inplace
-    > pip install .
-
-after that you should have `tdavec` package installed in your environment. To check this run python and try the following commands:
+In order to check if the intallation process was completed, you can run python and evaluate the following lines:
 
     > from tdavec.TDAvectorizer import createEllipse, TDAvectorizer
     >  ee  = createEllipse()
     >  v = TDAvectorizer()
     >  v.fit([ee])
     >  len(v.diags) # ==> 1 since there is only one diagram
-    >  len(v.diags[0]) # ==> 1 since there is two dimensions
+    >  len(v.diags[0]) # ==> 2 since there are two dimensions
     >  len(v.diags[0][0]) # ==> 99 since there are 99 hom0 features
 
-or run the provided unit test:
-
-    > python tdavec/unit_test.py
-
-Alternatively you can install the package directly from GitHub:
-
-    > pip install git+https://github.com/ALuchinsky/tdavect
