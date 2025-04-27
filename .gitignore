@@ -15,3 +15,5 @@ reinstall.sh
 sample_notebook/.ipynb_checkpoints/
 sample_notebook/Untitled.ipynb
 sample_notebook/oeis.ipynb
+dist/
+
