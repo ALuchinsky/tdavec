@@ -48,11 +48,8 @@ after that you should have `tdavec` package installed in your environment.
 
 In order to check if the intallation process was completed, you can run python and evaluate the following lines:
 
-    > from tdavec.TDAvectorizer import createEllipse, TDAvectorizer
-    >  ee  = createEllipse()
-    >  v = TDAvectorizer()
-    >  v.fit([ee])
-    >  len(v.diags) # ==> 1 since there is only one diagram
-    >  len(v.diags[0]) # ==> 2 since there are two dimensions
-    >  len(v.diags[0][0]) # ==> 99 since there are 99 hom0 features
+    > from tdavec import test_package
+    > X, D, PS = test_package()
+
+This function will create a simple point cloud, build a persistence diagram, caclulate the Persistence Silhouette from it, and return these three objects.
 

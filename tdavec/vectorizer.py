@@ -160,12 +160,16 @@ class TDAvectorizer:
 def test_package():
     clouds = []
     ratList = np.random.uniform(-0.5, 0.5, 10)
+    print("Creating point cloud...")
     for ratio in ratList:
         clouds = clouds + [createEllipse(a=1-ratio, b=1, eps=0.1)]
 
     vect = TDAvectorizer()
+    print("Creating PD...")
     vect.fit(clouds)
-    return clouds[0], vect.diags[0], vect.transform(output="PS")[0]
+    print("Creating vetorization...")
+    ps = vect.transform(output="PS", homDim=1)
+    return clouds[0], vect.diags[0], ps[0]
 
 
     
